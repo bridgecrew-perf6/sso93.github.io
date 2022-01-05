@@ -1,1 +1,3 @@
-# fashionLike equipo62
+# FashionLike
+
+Proyecto hecho por el grupo62
