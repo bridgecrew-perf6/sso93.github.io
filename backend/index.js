@@ -11,6 +11,8 @@ const passport = require("passport"); // mantener la sesión mientras se mueve p
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt"); //encriptar las contraseñas
 
+const cifrado = require("./cifrado"); //usamos cifrado.js para encriptar las contraseñas
+
 const app = express();
 
 var db;
