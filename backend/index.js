@@ -17,9 +17,11 @@ const app = express();
 
 var db;
 
-//--------CONEXIÓN A LA BASE DE DATOS
-MongoClient.connect(
-  "mongodb+srv://cluster0.c15y7.mongodb.net/yoiYvibLDIlYsrYn",
+//--------CONEXIÓN A LA BASE DE DATOS (las rutas de prueba están al final)
+MongoClient.connect(//-------los tres enlaces son pruebas de rutas para ver cuál conecta con la base de datos sin dar error
+  /* "mongodb+srv://cluster0.c15y7.mongodb.net/yoiYvibLDIlYsrYn", */
+  /* "mongodb+srv://OCuenca:yoiYvibLDIlYsrYn@cluster0.75jyv.mongodb.net/cluster0?retryWrites=true&w=majority", */
+  "mongodb+srv://OCuenca:yoiYvibLDIlYsrYn@cluster0.c15y7.mongodb.net/passwordDatabase?retryWrites=true&w=majority", // ¡POR FIN! jajaj
   { useUnifiedTopology: true },
   (err, client) => {
     if (err !== undefined) {
@@ -90,19 +92,22 @@ app.use(function (req, res, next) {
 }, express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 
-app.post("/signup", cifrado, function (req, res) {
-  //ruta para registrar usuarios
-  let email = req.body.email;
-  let password = req.body.password;
+app.post(
+  "/signup",
+  /* cifrado, */ function (req, res) {
+    //ruta para registrar usuarios
+    let email = req.body.email;
+    let password = req.body.password;
 
-  db.collection("usuarios").insertOne({ email, password }, (err, info) => {
-    if (err !== undefined) {
-      res.send(err);
-    } else {
-      res.send(info);
-    }
-  });
-});
+    db.collection("usuarios").insertOne({ email, password }, (err, info) => {
+      if (err !== undefined) {
+        res.send(err);
+      } else {
+        res.send(info);
+      }
+    });
+  }
+);
 
 app.post(
   // ruta que solicita el inicio de sesión a Passport y recibe la respuesta
@@ -119,6 +124,37 @@ app.get("/api", (req, res) => {
 app.get("/api/fail", (req, res) => {
   //si el inicio de sesión no es correcto
   res.send("usuario o contraseña incorrecto");
+});
+
+
+
+
+//---------------ESTAS DOS RUTAS SON DE PRUEBA PARA VER SI FUNCIONA EL CÓDIGO PARA CONECTAR CON LA BASE DE DATOS DE MONGODB
+app.get("/usuarios", (req, res) => {
+  let db = req.app.locals.db;
+
+  db.collection("prueba")
+    .find()
+    .toArray((err, info) => {
+      if (err !== undefined) {
+        res.send(err);
+      } else {
+        res.send(info);
+      }
+    });
+});
+
+app.post("/nuevo", (req, res) => {
+  let db = req.app.locals.db;
+  let nombre = "prueba";
+
+  db.collection("prueba").insertOne({ nombre }, (err, info) => {
+    if (err !== undefined) {
+      res.send(err);
+    } else {
+      res.send(info);
+    }
+  });
 });
 
 app.listen(3001); //normalmente se usa el 3000, he puesto 3001 para que no coincida con React
